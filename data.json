@@ -1,0 +1,80 @@
+{
+    "catalogo": [
+      {
+        "id": 1,
+        "nome": "Real Brasileiro",
+        "valor": 1.00,
+        "pais": "Brasil",
+        "ano": 2023,
+        "metal": "Aço",
+        "diametro": 23.2,
+        "peso": 5.7,
+        "estado": "Flor de cunho",
+        "circulacao": true,
+        "cedula": false,
+        "comemorativa": true,
+        "imagens": [
+          "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+          "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+        ],
+        "caracteristicas": "Imagem da Amazônia na frente, Brasão Nacional no verso"
+      },
+      {
+        "id": 2,
+        "nome": "Moeda de 1 Euro",
+        "valor": 1.00,
+        "pais": "União Europeia",
+        "ano": 2022,
+        "metal": "Aço com núcleo de Níquel",
+        "diametro": 19,
+        "peso": 7,
+        "estado": "Flor de cunho",
+        "circulacao": true,
+        "cedula": false,
+        "comemorativa": true,
+        "imagens": [
+          "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+          "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+        ],
+        "caracteristicas": "Porta de estilo clássico na frente, valor no verso"
+      },
+      {
+        "id": 3,
+        "nome": "Quetzal Guatemalteco",
+        "valor": 1.00,
+        "pais": "Guatemala",
+        "ano": 2021,
+        "metal": "Aço",
+        "diametro": 22,
+        "peso": 4.5,
+        "estado": "Flor de cunho",
+        "circulacao": true,
+        "cedula": false,
+        "comemorativa": true,
+        "imagens": [
+          "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+          "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+        ],
+        "caracteristicas": "Ave nacional na frente, valor e data no verso"
+      },
+      {
+        "id": 4,
+        "nome": "Dólar Americano (1 centavo)",
+        "valor": 0.01,
+        "pais": "Estados Unidos",
+        "ano": 2024,
+        "metal": "Zinco revestido de cobre",
+        "diametro": 19.05,
+        "peso": 2.5,
+        "estado": "Flor de cunho",
+        "circulacao": true,
+        "cedula": false,
+        "comemorativa": true,
+        "imagens": [
+          "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+          "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+        ],
+        "caracteristicas": "Cabeça de Lincoln na frente, símbolo da União no verso"      
+      }
+    ]
+  }
