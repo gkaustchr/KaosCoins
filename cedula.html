@@ -4,14 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./assets/img/icon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <title>Catalogo</title>
 </head>
 
-<body onload="catalogo()">
-    
+<body onload="pageCedula()">
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="./index.html">KaosCoin</a>
@@ -25,31 +26,136 @@
                         <a class="nav-link active" aria-current="page" href="./index.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Comemorativas</a>
+                        <a class="nav-link" href="./moeda.html?search=comemorativa">Comemorativas</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Países
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <ul class="dropdown-menu" id="dropdown-menu-pais">
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Estado
+                        </a>
+                        <ul class="dropdown-menu" id="dropdown-menu-estado">
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Cédulas</a>
+                        <a class="nav-link" href="./cedula.html">Cédulas</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
+    <div id="item">
+        <div class="card">
+            <!-- header -->
+            <div class="card-header">
+                Featured
+            </div>
 
+            <!-- Carousel -->
+            <div id="carouselExampleIndicators" class="carousel slide">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                        class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                        aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                        aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner" id="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2024/09/mc_30anos_real.jpg?w=600"
+                            class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://vipfesta.com.br/vipfesta/wp-content/uploads/2021/01/quais-sao-as-moedas-de-1-real-mais-valiosas-do-brasil-top-5-5.jpg"
+                            class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2024/09/mc_30anos_real.jpg?w=600"
+                            class="d-block w-100" alt="...">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="card-body" id="item-card-body">
+
+            </div>
+
+            <!-- Ficha técnica -->
+            <button class="btn btn-text" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                aria-expanded="false" aria-controls="collapseExample">
+                Ficha técnica
+            </button>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body" id="card-ficha">
+
+                </div>
+            </div>
+        </div>
+        <!-- Moedas -->
+        <div class="container text-center" id="container-moedas">
+            <div class="row">
+                <div class="container">
+                    <div class="card-container" id="card-container-moedas">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="list-item">
+        <!-- Moedas -->
+        <div class="container text-center" id="container-moedas">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h4 class="text-start">
+                        Moedas
+                    </h4>
+                </div>
+                <div class="col text-end">
+                    <a href="#"></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="container">
+                    <div class="card-container-page" id="card-container-moedas-itens">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center" id="pagination">
+            </ul>
+        </nav>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <div class="card-footer text-body-secondary text-center">
+        © Kaoscoin. Todos os direitos reservados.
+    </div>
 
     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-YOUR_AD_CLIENT" data-ad-slot="YOUR_AD_SLOT"
         data-ad-format="auto" data-full-width-responsive="true"></ins>

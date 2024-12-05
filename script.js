@@ -26,6 +26,7 @@ function home() {
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.nome}</h5>
                 <p class="card-text">${moeda.pais} ${moeda.ano}.</p>
+                <p class="card-text">${moeda.descricao}</p>
             </div>
         `;
 
@@ -242,6 +243,8 @@ const qntListaPais = (nome) => {
     }
 }
 
+
+//  Page moeda
 const pageMoeda = () => {
     try {
         const queryString = location.search
@@ -325,7 +328,7 @@ const listarItensPage = (params) => {
 
     if (!moedas?.length)
         return document.getElementById("container-moedas").style.display = "none"
-        // return location.href = "./index.html"
+    // return location.href = "./index.html"
 
     const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
     const end = ITENS_PER_PAGE * (params?.page || 1)
@@ -380,6 +383,198 @@ const listarItensPage = (params) => {
 }
 
 const listarItemPage = (id) => {
+    const qntMoedas = json.catalogo.map(item => !item.cedula).length
+    QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE) + 1
+
+    const moeda = json.catalogo.filter(item => item.id == id)[0]
+
+    console.log(moeda)
+
+    // Header
+    document.querySelector('.card-header').innerText = moeda?.titulo
+
+    // Body
+    const body = document.querySelector('#item-card-body')
+
+    // Ano - Lugar
+    const ano = document.createElement('h5')
+    ano.classList.add("card-text")
+    ano.innerText = `${moeda?.valor} ${moeda?.nome}, ${moeda?.ano}, ${moeda?.pais}.`
+    body.appendChild(ano)
+
+    // Descrição 
+    const estado = document.createElement('p')
+    estado.classList.add("card-text")
+    estado.innerText = `${moeda?.tipo}, ${moeda?.estado}.`
+    body.appendChild(estado)
+
+    // Quantidade 
+    const qnt = document.createElement('p')
+    qnt.classList.add("card-text")
+    qnt.innerText = `Sigla: ${moeda?.sigla}, Unidades: ${moeda?.quantidade}.`
+    body.appendChild(qnt)
+
+    // Circulação - Anomalia 
+    const circulação = document.createElement('p')
+    circulação.classList.add("card-text")
+    circulação.innerText = `Em circulação: ${moeda?.circulacao ? "sim" : "não"} - Anomalias: ${moeda?.anomalia ? "sim" : "não"}.`
+    body.appendChild(circulação)
+
+    // HTML
+    const html = document.createElement('div')
+    html.classList.add("card-text")
+    html.innerHTML = moeda?.html
+    body.appendChild(html)
+
+
+    // Ficha tecnica
+    iterarObjeto(moeda?.ficha)
+
+
+}
+
+
+//  Page moeda
+const pageCedula = () => {
+    try {
+        const queryString = location.search
+
+        if (queryString) {
+            const params = {};
+            queryString.substring(1).split("&").forEach(param => { //remove o '?' e divide pelos &
+                const [key, value] = param.split("=");
+                params[key] = decodeURIComponent(value); // Decodifica a URL para lidar com caracteres especiais
+            });
+
+            if (!params?.id) {
+                listarItensPageCedula(params)
+                document.getElementById("list-item").style.display = "block"
+                document.getElementById("item").style.display = "none"
+            } else {
+                document.getElementById("list-item").style.display = "none"
+                document.getElementById("item").style.display = "flex"
+                listarItemPageCedula(params.id)
+                // Moedas
+                let moedas = json.catalogo.filter(item => item.cedula)
+                if (!moedas?.length)
+                    document.getElementById("container-moedas").style.display = "none"
+                
+                moedas = moedas.slice(0, 8)
+                moedas.forEach(moeda => {
+                    const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
+
+                    itemMoeda.classList.add(`card`)
+                    itemMoeda.style.width = '18rem';
+
+                    itemMoeda.innerHTML = `
+                    <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
+                    <div class="card-body">
+                        <h5 class="card-titulo">${moeda.nome}</h5>
+                        <p class="card-text"> ${moeda.ano}, ${moeda.pais}.</p>
+                        <p class="card-text"> ${moeda.descricao}</p>
+                    </div>
+        `;
+
+                    itemMoeda.addEventListener('click', () => location.href = `./cedula.html?id=${moeda.id}`)
+                    document.getElementById("card-container-moedas").appendChild(itemMoeda);
+                })
+
+            }
+        } else {
+            document.getElementById("item").style.display = "none"
+            document.getElementById("list-item").style.display = "block"
+            listarItensPageCedula()
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const listarItensPageCedula = (params) => {
+    let qntMoedas = []
+    if (params?.search)
+        qntMoedas = json.catalogo.filter(item => item.cedula && item.tipo == params?.search).length
+    else if (params?.local)
+        qntMoedas = json.catalogo.filter(item => item.cedula && item.pais == params?.local).length
+    else if (params?.estado)
+        qntMoedas = json.catalogo.filter(item => item.cedula && item.estado == params?.estado).length
+    else
+        qntMoedas = json.catalogo.filter(item => item.cedula).length
+
+    QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE)
+
+    if (qntMoedas > 0 && qntMoedas < 20)
+        QNT_BUTTON_PAGINATION = 1
+
+    // Moedas
+    let moedas = json.catalogo.filter(item => item.cedula)
+    // listarMoedas(ITENS_PER_PAGE * INDEX_PAGINATION, ITENS_PER_PAGE * INDEX_PAGINATION - ITENS_PER_PAGE)
+
+    if (params?.search)
+        moedas = moedas.filter(item => item.tipo == params.search)
+    else if (params?.local)
+        moedas = moedas.filter(item => item.pais == params?.local)
+    else if (params?.estado)
+        moedas = moedas.filter(item => item.estado == params?.estado)
+
+    if (!moedas?.length)
+        return document.getElementById("container-moedas").style.display = "none"
+    // return location.href = "./index.html"
+
+    const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
+    const end = ITENS_PER_PAGE * (params?.page || 1)
+
+    moedas.slice(init, end)
+    moedas.forEach(moeda => {
+        const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
+
+        itemMoeda.classList.add(`card`)
+        itemMoeda.style.width = '18rem';
+
+        itemMoeda.innerHTML = `
+            <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
+            <div class="card-body">
+                <h5 class="card-titulo">${moeda.nome}</h5>
+                <p class="card-text"> ${moeda.ano}, ${moeda.pais}.</p>
+                <p class="card-text"> ${moeda.descricao}</p>
+                </div>
+                `;
+
+        itemMoeda.addEventListener('click', () => location.href = `./cedula.html?id=${moeda.id}`)
+        document.getElementById("card-container-moedas-itens").appendChild(itemMoeda);
+    })
+
+    const pagination = document.getElementById("pagination")
+
+    let li = document.createElement('li')
+    li.innerHTML = `
+    <button class="page-link" onclick="buttonPagination('previous')" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+    </button>
+    `
+    pagination.appendChild(li)
+
+    for (let i = 0; i < QNT_BUTTON_PAGINATION; i++) {
+        let it = document.createElement('li')
+        it.innerHTML = `
+        <button class="page-link" onclick="buttonPagination(${i + 1})" >
+            <span aria-hidden="true">${i + 1}</span>
+        </button>
+        `
+        pagination.appendChild(it)
+    }
+
+    let lii = document.createElement('li')
+    lii.innerHTML = `
+    <button class="page-link" onclick="buttonPagination('next')"  aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+    </button>
+    `
+    pagination.appendChild(lii)
+}
+
+const listarItemPageCedula = (id) => {
     const qntMoedas = json.catalogo.map(item => !item.cedula).length
     QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE) + 1
 
@@ -892,6 +1087,36 @@ const json = {
             "cedula": false,
             "tipo": "comemorativa",
             "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 100021,
+            "titulo": "Nota de R$ 100 da familia de 1994",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 100,
+            "pais": "Brasil",
+            "ano": 2001,
+            "quantidade": 1,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": true,
+            "tipo": "normla",
+            "descricao": "Cédula de um peixe azul",
             "anomalia": false,
             "kit": false,
             "ficha": {
