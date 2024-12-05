@@ -24,7 +24,7 @@ function home() {
         itemMoeda.innerHTML = `
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
-                <h5 class="card-title">${moeda.nome}</h5>
+                <h5 class="card-titulo">${moeda.nome}</h5>
                 <p class="card-text">${moeda.pais} ${moeda.ano}.</p>
             </div>
         `;
@@ -46,12 +46,12 @@ function home() {
         itemMoeda.innerHTML = `
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
-                <h5 class="card-title">${moeda.nome}</h5>
+                <h5 class="card-titulo">${moeda.nome}</h5>
                 <p class="card-text">${moeda.pais} ${moeda.ano}.</p>
             </div>
         `;
 
-        itemMoeda.addEventListener('click', () => location.href = `./catalogo.html?id=${moeda.id}`)
+        itemMoeda.addEventListener('click', () => location.href = `./moeda.html?id=${moeda.id}`)
         document.getElementById("card-container-comemorativa").appendChild(itemMoeda);
     })
 
@@ -68,12 +68,12 @@ function home() {
             const qnt = qntListaPais(pais)
             itemPais.innerHTML = `
             <div class="card-body text-center">
-            <h5 class="card-title">${pais}</h5>
+            <h5 class="card-titulo">${pais}</h5>
                 <p class="card-text">${qnt} ${qnt > 1 ? "itens" : "item"}</p>
                 </div>
                 `;
 
-            itemPais.addEventListener('click', () => location.href = `./pais.html?pais=${pais}`)
+            itemPais.addEventListener('click', () => location.href = `./moeda.html?local=${pais}`)
             document.getElementById("card-container-paises").appendChild(itemPais);
         } catch (error) {
             console.log(error)
@@ -94,7 +94,7 @@ function home() {
         itemMoeda.innerHTML = `
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
-                <h5 class="card-title">${moeda.nome}</h5>
+                <h5 class="card-titulo">${moeda.nome}</h5>
                 <p class="card-text">${moeda.pais} ${moeda.ano}.</p>
             </div>
         `;
@@ -254,17 +254,40 @@ const pageMoeda = () => {
             });
 
             if (!params?.id) {
-                listarItensPage()
+                listarItensPage(params)
                 document.getElementById("list-item").style.display = "block"
                 document.getElementById("item").style.display = "none"
             } else {
                 document.getElementById("list-item").style.display = "none"
                 document.getElementById("item").style.display = "flex"
-                listarItemPage()
+                listarItemPage(params.id)
+                // Moedas
+                const moedas = listarMoedasRandom(8)
+                if (!moedas?.length)
+                    document.getElementById("container-moedas").style.display = "none"
+                moedas.forEach(moeda => {
+                    const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
+
+                    itemMoeda.classList.add(`card`)
+                    itemMoeda.style.width = '18rem';
+
+                    itemMoeda.innerHTML = `
+                    <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
+                    <div class="card-body">
+                        <h5 class="card-titulo">${moeda.nome}</h5>
+                        <p class="card-text"> ${moeda.ano}, ${moeda.pais}.</p>
+                        <p class="card-text"> ${moeda.descricao}</p>
+                    </div>
+        `;
+
+                    itemMoeda.addEventListener('click', () => location.href = `./moeda.html?id=${moeda.id}`)
+                    document.getElementById("card-container-moedas").appendChild(itemMoeda);
+                })
+
             }
         } else {
-            document.getElementById("list-item").style.display = "block"
             document.getElementById("item").style.display = "none"
+            document.getElementById("list-item").style.display = "block"
             listarItensPage()
         }
 
@@ -273,15 +296,41 @@ const pageMoeda = () => {
     }
 }
 
-const listarItensPage = () => {
-    const qntMoedas = json.catalogo.map(item => !item.cedula).length
-    QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE) + 1
+const listarItensPage = (params) => {
+    let qntMoedas = []
+    if (params?.search)
+        qntMoedas = json.catalogo.filter(item => !item.cedula && item.tipo == params?.search).length
+    else if (params?.local)
+        qntMoedas = json.catalogo.filter(item => item.pais == params?.local).length
+    else if (params?.estado)
+        qntMoedas = json.catalogo.filter(item => item.estado == params?.estado).length
+    else
+        qntMoedas = json.catalogo.filter(item => !item.cedula).length
 
+    QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE)
+
+    if (qntMoedas > 0 && qntMoedas < 20)
+        QNT_BUTTON_PAGINATION = 1
 
     // Moedas
-    const moedas = listarMoedas(ITENS_PER_PAGE * INDEX_PAGINATION, ITENS_PER_PAGE * INDEX_PAGINATION - ITENS_PER_PAGE)
+    let moedas = json.catalogo.filter(item => !item.cedula)
+    // listarMoedas(ITENS_PER_PAGE * INDEX_PAGINATION, ITENS_PER_PAGE * INDEX_PAGINATION - ITENS_PER_PAGE)
+
+    if (params?.search)
+        moedas = moedas.filter(item => item.tipo == params.search)
+    else if (params?.local)
+        moedas = moedas.filter(item => item.pais == params?.local)
+    else if (params?.estado)
+        moedas = moedas.filter(item => item.estado == params?.estado)
+
     if (!moedas?.length)
-        document.getElementById("container-moedas").style.display = "none"
+        return document.getElementById("container-moedas").style.display = "none"
+        // return location.href = "./index.html"
+
+    const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
+    const end = ITENS_PER_PAGE * (params?.page || 1)
+
+    moedas.slice(init, end)
     moedas.forEach(moeda => {
         const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
 
@@ -291,13 +340,14 @@ const listarItensPage = () => {
         itemMoeda.innerHTML = `
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
-                <h5 class="card-title">${moeda.nome}</h5>
-                <p class="card-text">${moeda.pais} ${moeda.ano}.</p>
-            </div>
-        `;
+                <h5 class="card-titulo">${moeda.nome}</h5>
+                <p class="card-text"> ${moeda.ano}, ${moeda.pais}.</p>
+                <p class="card-text"> ${moeda.descricao}</p>
+                </div>
+                `;
 
         itemMoeda.addEventListener('click', () => location.href = `./moeda.html?id=${moeda.id}`)
-        document.getElementById("card-container-moedas").appendChild(itemMoeda);
+        document.getElementById("card-container-moedas-itens").appendChild(itemMoeda);
     })
 
     const pagination = document.getElementById("pagination")
@@ -329,61 +379,72 @@ const listarItensPage = () => {
     pagination.appendChild(lii)
 }
 
-
-const listarItemPage = () => {
+const listarItemPage = (id) => {
     const qntMoedas = json.catalogo.map(item => !item.cedula).length
     QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE) + 1
 
+    const moeda = json.catalogo.filter(item => item.id == id)[0]
 
-    // Moedas
-    const moedas = listarMoedas(ITENS_PER_PAGE * INDEX_PAGINATION, ITENS_PER_PAGE * INDEX_PAGINATION - ITENS_PER_PAGE)
-    if (!moedas?.length)
-        document.getElementById("container-moedas").style.display = "none"
-    moedas.forEach(moeda => {
-        const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
+    console.log(moeda)
 
-        itemMoeda.classList.add(`card`)
-        itemMoeda.style.width = '18rem';
+    // Header
+    document.querySelector('.card-header').innerText = moeda?.titulo
 
-        itemMoeda.innerHTML = `
-            <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
-            <div class="card-body">
-                <h5 class="card-title">${moeda.nome}</h5>
-                <p class="card-text">${moeda.pais} ${moeda.ano}.</p>
-            </div>
-        `;
+    // Body
+    const body = document.querySelector('#item-card-body')
 
-        itemMoeda.addEventListener('click', () => location.href = `./moeda.html?id=${moeda.id}`)
-        document.getElementById("card-container-moedas").appendChild(itemMoeda);
-    })
+    // Ano - Lugar
+    const ano = document.createElement('h5')
+    ano.classList.add("card-text")
+    ano.innerText = `${moeda?.valor} ${moeda?.nome}, ${moeda?.ano}, ${moeda?.pais}.`
+    body.appendChild(ano)
 
-    const pagination = document.getElementById("pagination")
+    // Descrição 
+    const estado = document.createElement('p')
+    estado.classList.add("card-text")
+    estado.innerText = `${moeda?.tipo}, ${moeda?.estado}.`
+    body.appendChild(estado)
 
-    let li = document.createElement('li')
-    li.innerHTML = `
-    <button class="page-link" onclick="buttonPagination('previous')" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-    </button>
-    `
-    pagination.appendChild(li)
+    // Quantidade 
+    const qnt = document.createElement('p')
+    qnt.classList.add("card-text")
+    qnt.innerText = `Sigla: ${moeda?.sigla}, Unidades: ${moeda?.quantidade}.`
+    body.appendChild(qnt)
 
-    for (let i = 0; i < QNT_BUTTON_PAGINATION; i++) {
-        let it = document.createElement('li')
-        it.innerHTML = `
-        <button class="page-link" onclick="buttonPagination(${i + 1})" >
-            <span aria-hidden="true">${i + 1}</span>
-        </button>
-        `
-        pagination.appendChild(it)
+    // Circulação - Anomalia 
+    const circulação = document.createElement('p')
+    circulação.classList.add("card-text")
+    circulação.innerText = `Em circulação: ${moeda?.circulacao ? "sim" : "não"} - Anomalias: ${moeda?.anomalia ? "sim" : "não"}.`
+    body.appendChild(circulação)
+
+    // HTML
+    const html = document.createElement('div')
+    html.classList.add("card-text")
+    html.innerHTML = moeda?.html
+    body.appendChild(html)
+
+
+    // Ficha tecnica
+    iterarObjeto(moeda?.ficha)
+
+
+}
+
+function iterarObjeto(obj) {
+    for (const [chave, valor] of Object.entries(obj)) {
+        if (typeof valor === 'object') {
+            iterarObjeto(valor); // Chama a função recursivamente para objetos aninhados
+        } else {
+            const ficha = document.querySelector('#card-ficha')
+            const p = document.createElement('p')
+            p.classList.add("card-text")
+            p.innerText = `${chave}: ${valor}.`
+            ficha.appendChild(p)
+
+
+            console.log(chave, valor);
+        }
     }
-
-    let lii = document.createElement('li')
-    lii.innerHTML = `
-    <button class="page-link" onclick="buttonPagination('next')"  aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-    </button>
-    `
-    pagination.appendChild(lii)
 }
 
 const buttonPagination = (value) => {
@@ -459,20 +520,19 @@ const populateNavbar = () => {
         paises?.forEach(pais => {
             try {
                 const li = document.createElement('li'); // Cria um item de lista para cada moeda
-                li.innerHTML = `<a class="dropdown-item" href="./pais.html?pais=${pais}">${pais}</a>`;
-                console.log(li)
+                li.innerHTML = `<a class="dropdown-item" href="./moeda.html?local=${pais}">${pais}</a>`;
                 document.getElementById("dropdown-menu-pais").appendChild(li);
             } catch (error) {
                 console.log(error)
             }
         })
 
-        // PAISES
+        // Estado
         const estados = listarEstadosRandom()
         estados?.forEach(estado => {
             try {
                 const li = document.createElement('li'); // Cria um item de lista para cada moeda
-                li.innerHTML = `<a class="dropdown-item" href="./estado.html?estado=${estado}">${estado}</a>`;
+                li.innerHTML = `<a class="dropdown-item" href="./moeda.html?estado=${estado}">${estado}</a>`;
                 document.getElementById("dropdown-menu-estado").appendChild(li);
             } catch (error) {
                 console.log(error)
@@ -485,46 +545,17 @@ const populateNavbar = () => {
 
 document.addEventListener('DOMContentLoaded', populateNavbar)
 
-
 // Exemplo de uso (substitua pelo seu método de carregamento do JSON):
 const json = {
     "catalogo": [
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
-            "pais": "Brasil",
+            "pais": "Argentina",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -549,40 +580,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -607,40 +610,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -665,13 +640,14 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
-            "pais": "Brasil",
+            "pais": "Alemanha",
             "ano": 2022,
             "quantidade": 1,
-            "estado": "Flor de Cunho",
+            "estado": "Soberba",
             "circulacao": true,
             "cedula": false,
             "tipo": "comemorativa",
@@ -687,18 +663,49 @@ const json = {
                 "espessura": "2.55 mm"
             },
             "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
                 "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
             ],
             "html": "<p>teste</p>"
         },
         {
-            "id": 10002,
+            "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
-            "valor": 0.5,
+            "valor": 1,
             "pais": "Brasil",
-            "ano": 2024,
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "Soberba",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -723,13 +730,14 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
             "quantidade": 1,
-            "estado": "Flor de Cunho",
+            "estado": "Soberba",
             "circulacao": true,
             "cedula": false,
             "tipo": "comemorativa",
@@ -745,18 +753,19 @@ const json = {
                 "espessura": "2.55 mm"
             },
             "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
                 "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
             ],
             "html": "<p>teste</p>"
         },
         {
-            "id": 10002,
+            "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
-            "valor": 0.5,
+            "valor": 1,
             "pais": "Brasil",
-            "ano": 2024,
+            "ano": 2022,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -781,40 +790,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -839,13 +820,14 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
             "quantidade": 1,
-            "estado": "Flor de Cunho",
+            "estado": "MBC",
             "circulacao": true,
             "cedula": false,
             "tipo": "comemorativa",
@@ -861,18 +843,19 @@ const json = {
                 "espessura": "2.55 mm"
             },
             "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
                 "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
             ],
             "html": "<p>teste</p>"
         },
         {
-            "id": 10002,
+            "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
-            "valor": 0.5,
+            "valor": 1,
             "pais": "Brasil",
-            "ano": 2024,
+            "ano": 2022,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -897,40 +880,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -955,13 +910,14 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
             "quantidade": 1,
-            "estado": "Flor de Cunho",
+            "estado": "BC",
             "circulacao": true,
             "cedula": false,
             "tipo": "comemorativa",
@@ -977,18 +933,19 @@ const json = {
                 "espessura": "2.55 mm"
             },
             "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
                 "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
             ],
             "html": "<p>teste</p>"
         },
         {
-            "id": 10002,
+            "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
-            "valor": 0.5,
+            "valor": 1,
             "pais": "Brasil",
-            "ano": 2024,
+            "ano": 2022,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -1013,40 +970,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -1071,40 +1000,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -1129,13 +1030,14 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
             "quantidade": 1,
-            "estado": "Flor de Cunho",
+            "estado": "BC",
             "circulacao": true,
             "cedula": false,
             "tipo": "comemorativa",
@@ -1151,18 +1053,19 @@ const json = {
                 "espessura": "2.55 mm"
             },
             "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
                 "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
             ],
             "html": "<p>teste</p>"
         },
         {
-            "id": 10002,
+            "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
-            "valor": 0.5,
+            "valor": 1,
             "pais": "Brasil",
-            "ano": 2024,
+            "ano": 2022,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -1187,40 +1090,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -1245,40 +1120,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -1303,40 +1150,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -1361,40 +1180,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -1419,40 +1210,12 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
             "pais": "Brasil",
             "ano": 2022,
-            "quantidade": 1,
-            "estado": "Flor de Cunho",
-            "circulacao": true,
-            "cedula": false,
-            "tipo": "comemorativa",
-            "descricao": "texto",
-            "anomalia": false,
-            "kit": false,
-            "ficha": {
-                "composicao": "Aço revestido",
-                "borda": "Lisa",
-                "formato": "Redonda",
-                "peso": "7.55 gramas",
-                "diametro": "27 mm",
-                "espessura": "2.55 mm"
-            },
-            "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-            ],
-            "html": "<p>teste</p>"
-        },
-        {
-            "id": 10002,
-            "nome": "Real",
-            "sigla": "R$",
-            "valor": 0.5,
-            "pais": "Brasil",
-            "ano": 2024,
             "quantidade": 1,
             "estado": "Flor de Cunho",
             "circulacao": true,
@@ -1477,6 +1240,7 @@ const json = {
         },
         {
             "id": 10001,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
@@ -1499,16 +1263,317 @@ const json = {
                 "espessura": "2.55 mm"
             },
             "imagens": [
-                "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "MBC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "Flor de Cunho",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "Flor de Cunho",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "normal",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "Flor de Cunho",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "Flor de Cunho",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "Flor de Cunho",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "Flor de Cunho",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "normal",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "Flor de Cunho",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "normal",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "Flor de Cunho",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
+            ],
+            "html": "<p>teste</p>"
+        },
+        {
+            "id": 10001,
+            "titulo": "asd",
+            "nome": "Real",
+            "sigla": "R$",
+            "valor": 1,
+            "pais": "Brasil",
+            "ano": 2022,
+            "quantidade": 1,
+            "estado": "Flor de Cunho",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "texto",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Aço revestido",
+                "borda": "Lisa",
+                "formato": "Redonda",
+                "peso": "7.55 gramas",
+                "diametro": "27 mm",
+                "espessura": "2.55 mm"
+            },
+            "imagens": [
+                "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
                 "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
             ],
             "html": "<p>teste</p>"
         },
         {
             "id": 10002,
+            "titulo": "asd",
             "nome": "Real",
             "sigla": "R$",
-            "valor": 0.5,
+            "valor": 50,
             "pais": "Brasil",
             "ano": 2024,
             "quantidade": 1,
