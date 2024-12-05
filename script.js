@@ -24,8 +24,8 @@ function home() {
         itemMoeda.innerHTML = `
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
-                <h5 class="card-titulo">${moeda.nome}</h5>
-                <p class="card-text">${moeda.pais} ${moeda.ano}.</p>
+                <h5 class="card-titulo">${moeda.titulo}</h5>
+                <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo  : ""} ${moeda.ano}, ${moeda.pais}.</p>
                 <p class="card-text">${moeda.descricao}</p>
             </div>
         `;
@@ -47,8 +47,9 @@ function home() {
         itemMoeda.innerHTML = `
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
-                <h5 class="card-titulo">${moeda.nome}</h5>
-                <p class="card-text">${moeda.pais} ${moeda.ano}.</p>
+                <h5 class="card-titulo">${moeda.titulo}</h5>
+                <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo  : ""} ${moeda.ano}, ${moeda.pais}.</p>
+                <p class="card-text">${moeda.descricao}</p>
             </div>
         `;
 
@@ -95,8 +96,9 @@ function home() {
         itemMoeda.innerHTML = `
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
-                <h5 class="card-titulo">${moeda.nome}</h5>
-                <p class="card-text">${moeda.pais} ${moeda.ano}.</p>
+                <h5 class="card-titulo">${moeda.titulo}</h5>
+                <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo  : ""} ${moeda.ano}, ${moeda.pais}.</p>
+                <p class="card-text">${moeda.descricao}</p>
             </div>
         `;
 
@@ -277,8 +279,8 @@ const pageMoeda = () => {
                     itemMoeda.innerHTML = `
                     <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
                     <div class="card-body">
-                        <h5 class="card-titulo">${moeda.nome}</h5>
-                        <p class="card-text"> ${moeda.ano}, ${moeda.pais}.</p>
+                        <h5 class="card-titulo">${moeda.titulo}</h5>
+                        <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
                         <p class="card-text"> ${moeda.descricao}</p>
                     </div>
         `;
@@ -343,8 +345,8 @@ const listarItensPage = (params) => {
         itemMoeda.innerHTML = `
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
-                <h5 class="card-titulo">${moeda.nome}</h5>
-                <p class="card-text"> ${moeda.ano}, ${moeda.pais}.</p>
+                <h5 class="card-titulo">${moeda.titulo}</h5>
+                <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
                 <p class="card-text"> ${moeda.descricao}</p>
                 </div>
                 `;
@@ -469,8 +471,8 @@ const pageCedula = () => {
                     itemMoeda.innerHTML = `
                     <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
                     <div class="card-body">
-                        <h5 class="card-titulo">${moeda.nome}</h5>
-                        <p class="card-text"> ${moeda.ano}, ${moeda.pais}.</p>
+                        <h5 class="card-titulo">${moeda.titulo}</h5>
+                        <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
                         <p class="card-text"> ${moeda.descricao}</p>
                     </div>
         `;
@@ -535,8 +537,8 @@ const listarItensPageCedula = (params) => {
         itemMoeda.innerHTML = `
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
-                <h5 class="card-titulo">${moeda.nome}</h5>
-                <p class="card-text"> ${moeda.ano}, ${moeda.pais}.</p>
+                <h5 class="card-titulo">${moeda.titulo}</h5>
+                <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
                 <p class="card-text"> ${moeda.descricao}</p>
                 </div>
                 `;
@@ -1115,7 +1117,7 @@ const json = {
             "estado": "BC",
             "circulacao": true,
             "cedula": true,
-            "tipo": "normla",
+            "tipo": "normal",
             "descricao": "Cédula de um peixe azul",
             "anomalia": false,
             "kit": false,
