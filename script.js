@@ -334,9 +334,9 @@ const listarItensPage = (params) => {
 
     const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
     const end = ITENS_PER_PAGE * (params?.page || 1)
-
-    moedas.slice(init, end)
-    moedas.forEach(moeda => {
+    let coins = moedas.slice(init, end)
+    
+    coins.forEach(moeda => {
         const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
 
         itemMoeda.classList.add(`card`)
@@ -527,8 +527,8 @@ const listarItensPageCedula = (params) => {
     const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
     const end = ITENS_PER_PAGE * (params?.page || 1)
 
-    moedas.slice(init, end)
-    moedas.forEach(moeda => {
+    const coins = moedas.slice(init, end)
+    coins.forEach(moeda => {
         const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
 
         itemMoeda.classList.add(`card`)
