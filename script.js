@@ -630,95 +630,87 @@ const listarItemPageCedula = (id) => {
 const pageLocal = () => {
     try {
         const queryString = location.search
-
-        if (queryString) {
-            const params = {};
-            queryString.substring(1).split("&").forEach(param => { //remove o '?' e divide pelos &
-                const [key, value] = param.split("=");
-                params[key] = decodeURIComponent(value); // Decodifica a URL para lidar com caracteres especiais
-            });
-
-            if (!params?.id) {
-                listarItensPageCedula(params)
-                document.getElementById("list-item").style.display = "block"
-                document.getElementById("item").style.display = "none"
-            } else {
-                document.getElementById("list-item").style.display = "none"
-                document.getElementById("item").style.display = "flex"
-                listarItemPageCedula(params.id)
-                // Moedas
-                let moedas = json.catalogo.filter(item => item.cedula)
-                if (!moedas?.length)
-                    document.getElementById("container-moedas").style.display = "none"
-
-                moedas = moedas.slice(0, 8)
-                moedas.forEach(moeda => {
-                    const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
-
-                    itemMoeda.classList.add(`card`)
-                    itemMoeda.style.width = '18rem';
-
-                    itemMoeda.innerHTML = `
-                    <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
-                    <div class="card-body">
-                        <h5 class="card-titulo">${moeda.titulo}</h5>
-                        <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
-                        <p class="card-text"> ${moeda.descricao}</p>
-                    </div>
-        `;
-
-                    itemMoeda.addEventListener('click', () => location.href = `./cedula.html?id=${moeda.id}`)
-                    document.getElementById("card-container-moedas").appendChild(itemMoeda);
-                })
-
-            }
-        } else {
-            document.getElementById("item").style.display = "none"
-            document.getElementById("list-item").style.display = "block"
-            listarItensPageCedula()
-        }
-
+        listarItensPageLocal()
     } catch (error) {
         console.log(error)
     }
 }
 
 const listarItensPageLocal = (params) => {
-    let qntMoedas = []
-    if (params?.search)
-        qntMoedas = json.catalogo.filter(item => item.cedula && item.tipo == params?.search).length
-    else if (params?.local)
-        qntMoedas = json.catalogo.filter(item => item.cedula && item.pais == params?.local).length
-    else if (params?.estado)
-        qntMoedas = json.catalogo.filter(item => item.cedula && item.estado == params?.estado).length
-    else
-        qntMoedas = json.catalogo.filter(item => item.cedula).length
 
+    let qntMoedas = []
+    let list = json.catalogo
+
+    let moedas = list.reduce((grupo, item) => {
+        const pais = item.pais;
+        if (!grupo[pais]) {
+            grupo[pais] = []; // Cria um novo array para o país se ele não existir
+        }
+        grupo[pais].push(item); // Adiciona o item ao grupo do país
+        return grupo;
+    }, {});
+    console.log(moedas)
+    const section = document.querySelector("section")
+    if (!moedas)
+        return document.querySelector("section").style.display = "none"
+    // return location.href = "./index.html"
+
+    qntMoedas = moedas.length
     QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE)
 
     if (qntMoedas > 0 && qntMoedas < 20)
         QNT_BUTTON_PAGINATION = 1
 
-    // Moedas
-    let moedas = json.catalogo.filter(item => item.cedula)
-    // listarMoedas(ITENS_PER_PAGE * INDEX_PAGINATION, ITENS_PER_PAGE * INDEX_PAGINATION - ITENS_PER_PAGE)
-
-    if (params?.search)
-        moedas = moedas.filter(item => item.tipo == params.search)
-    else if (params?.local)
-        moedas = moedas.filter(item => item.pais == params?.local)
-    else if (params?.estado)
-        moedas = moedas.filter(item => item.estado == params?.estado)
-
-    if (!moedas?.length)
-        return document.getElementById("container-moedas").style.display = "none"
-    // return location.href = "./index.html"
-
     const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
     const end = ITENS_PER_PAGE * (params?.page || 1)
 
-    const coins = moedas.slice(init, end)
-    coins.forEach(moeda => {
+    // const coins = moedas.slice(init, end)
+    // console.log(coins)
+
+    for (const pais in moedas) {
+        let div = document.createElement('div');
+        div.innerHTML = ` 
+            <div class="container text-center" id="container-paises">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h4 class="text-start">
+                    ${pais}
+                    </h4>
+                </div>
+                <div class="col text-end">
+                ${moedas[pais]?.length > 10 ? "<a href='./moeda.html?local=" + pais + "'>ver mais</a>" : "<a href=''></a>"}
+                </div>
+            </div>
+            <div class="row">
+                <div class="container">
+                    <div class="card-container" id="card-container-${pais?.trim()?.toLowerCase()}">
+                    </div>
+                </div>
+            </div>
+            </div>  
+            `;
+        section.appendChild(div);
+        moedas[pais].forEach((moeda, index) => {
+            const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
+
+            itemMoeda.classList.add(`card`)
+            itemMoeda.style.width = '18rem';
+
+            itemMoeda.innerHTML = `
+            <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
+            <div class="card-body">
+                <h5 class="card-titulo">${moeda.titulo}</h5>
+                <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
+                <p class="card-text"> ${moeda.descricao}</p>
+                </div>
+                `;
+
+            itemMoeda.addEventListener('click', () => location.href = `./${moeda?.cedula ? "cedula.html" : "moeda.html"}?id=${moeda.id}`)
+            document.getElementById(`card-container-${pais?.trim()?.toLowerCase()}`).appendChild(itemMoeda);
+        });
+    }
+
+    moedas.forEach(moeda => {
         const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
 
         itemMoeda.classList.add(`card`)
