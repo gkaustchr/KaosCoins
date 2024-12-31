@@ -25,7 +25,7 @@ function home() {
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.titulo}</h5>
-                <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo  : ""} ${moeda.ano}, ${moeda.pais}.</p>
+                <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
                 <p class="card-text">${moeda.descricao}</p>
             </div>
         `;
@@ -48,7 +48,7 @@ function home() {
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.titulo}</h5>
-                <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo  : ""} ${moeda.ano}, ${moeda.pais}.</p>
+                <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
                 <p class="card-text">${moeda.descricao}</p>
             </div>
         `;
@@ -97,7 +97,7 @@ function home() {
             <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.titulo}</h5>
-                <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo  : ""} ${moeda.ano}, ${moeda.pais}.</p>
+                <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
                 <p class="card-text">${moeda.descricao}</p>
             </div>
         `;
@@ -335,7 +335,7 @@ const listarItensPage = (params) => {
     const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
     const end = ITENS_PER_PAGE * (params?.page || 1)
     let coins = moedas.slice(init, end)
-    
+
     coins.forEach(moeda => {
         const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
 
@@ -435,8 +435,7 @@ const listarItemPage = (id) => {
 
 }
 
-
-//  Page moeda
+//  Page Cedula
 const pageCedula = () => {
     try {
         const queryString = location.search
@@ -460,7 +459,7 @@ const pageCedula = () => {
                 let moedas = json.catalogo.filter(item => item.cedula)
                 if (!moedas?.length)
                     document.getElementById("container-moedas").style.display = "none"
-                
+
                 moedas = moedas.slice(0, 8)
                 moedas.forEach(moeda => {
                     const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
@@ -626,6 +625,147 @@ const listarItemPageCedula = (id) => {
 
 
 }
+
+//  Page Local
+const pageLocal = () => {
+    try {
+        const queryString = location.search
+
+        if (queryString) {
+            const params = {};
+            queryString.substring(1).split("&").forEach(param => { //remove o '?' e divide pelos &
+                const [key, value] = param.split("=");
+                params[key] = decodeURIComponent(value); // Decodifica a URL para lidar com caracteres especiais
+            });
+
+            if (!params?.id) {
+                listarItensPageCedula(params)
+                document.getElementById("list-item").style.display = "block"
+                document.getElementById("item").style.display = "none"
+            } else {
+                document.getElementById("list-item").style.display = "none"
+                document.getElementById("item").style.display = "flex"
+                listarItemPageCedula(params.id)
+                // Moedas
+                let moedas = json.catalogo.filter(item => item.cedula)
+                if (!moedas?.length)
+                    document.getElementById("container-moedas").style.display = "none"
+
+                moedas = moedas.slice(0, 8)
+                moedas.forEach(moeda => {
+                    const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
+
+                    itemMoeda.classList.add(`card`)
+                    itemMoeda.style.width = '18rem';
+
+                    itemMoeda.innerHTML = `
+                    <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
+                    <div class="card-body">
+                        <h5 class="card-titulo">${moeda.titulo}</h5>
+                        <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
+                        <p class="card-text"> ${moeda.descricao}</p>
+                    </div>
+        `;
+
+                    itemMoeda.addEventListener('click', () => location.href = `./cedula.html?id=${moeda.id}`)
+                    document.getElementById("card-container-moedas").appendChild(itemMoeda);
+                })
+
+            }
+        } else {
+            document.getElementById("item").style.display = "none"
+            document.getElementById("list-item").style.display = "block"
+            listarItensPageCedula()
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const listarItensPageLocal = (params) => {
+    let qntMoedas = []
+    if (params?.search)
+        qntMoedas = json.catalogo.filter(item => item.cedula && item.tipo == params?.search).length
+    else if (params?.local)
+        qntMoedas = json.catalogo.filter(item => item.cedula && item.pais == params?.local).length
+    else if (params?.estado)
+        qntMoedas = json.catalogo.filter(item => item.cedula && item.estado == params?.estado).length
+    else
+        qntMoedas = json.catalogo.filter(item => item.cedula).length
+
+    QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE)
+
+    if (qntMoedas > 0 && qntMoedas < 20)
+        QNT_BUTTON_PAGINATION = 1
+
+    // Moedas
+    let moedas = json.catalogo.filter(item => item.cedula)
+    // listarMoedas(ITENS_PER_PAGE * INDEX_PAGINATION, ITENS_PER_PAGE * INDEX_PAGINATION - ITENS_PER_PAGE)
+
+    if (params?.search)
+        moedas = moedas.filter(item => item.tipo == params.search)
+    else if (params?.local)
+        moedas = moedas.filter(item => item.pais == params?.local)
+    else if (params?.estado)
+        moedas = moedas.filter(item => item.estado == params?.estado)
+
+    if (!moedas?.length)
+        return document.getElementById("container-moedas").style.display = "none"
+    // return location.href = "./index.html"
+
+    const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
+    const end = ITENS_PER_PAGE * (params?.page || 1)
+
+    const coins = moedas.slice(init, end)
+    coins.forEach(moeda => {
+        const itemMoeda = document.createElement('div'); // Cria um item de lista para cada moeda
+
+        itemMoeda.classList.add(`card`)
+        itemMoeda.style.width = '18rem';
+
+        itemMoeda.innerHTML = `
+            <img src="${moeda?.imagens[0]}" alt="${moeda.nome} - Imagem" class="card-img-top rounded" style="width: 100%; height: auto;"/>
+            <div class="card-body">
+                <h5 class="card-titulo">${moeda.titulo}</h5>
+                <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
+                <p class="card-text"> ${moeda.descricao}</p>
+                </div>
+                `;
+
+        itemMoeda.addEventListener('click', () => location.href = `./cedula.html?id=${moeda.id}`)
+        document.getElementById("card-container-moedas-itens").appendChild(itemMoeda);
+    })
+
+    const pagination = document.getElementById("pagination")
+
+    let li = document.createElement('li')
+    li.innerHTML = `
+    <button class="page-link" onclick="buttonPagination('previous')" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+    </button>
+    `
+    pagination.appendChild(li)
+
+    for (let i = 0; i < QNT_BUTTON_PAGINATION; i++) {
+        let it = document.createElement('li')
+        it.innerHTML = `
+        <button class="page-link" onclick="buttonPagination(${i + 1})" >
+            <span aria-hidden="true">${i + 1}</span>
+        </button>
+        `
+        pagination.appendChild(it)
+    }
+
+    let lii = document.createElement('li')
+    lii.innerHTML = `
+    <button class="page-link" onclick="buttonPagination('next')"  aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+    </button>
+    `
+    pagination.appendChild(lii)
+}
+
 
 function iterarObjeto(obj) {
     for (const [chave, valor] of Object.entries(obj)) {
