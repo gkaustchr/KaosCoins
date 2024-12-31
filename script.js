@@ -1,7 +1,43 @@
 const ITENS_PER_PAGE = 20
 let QNT_BUTTON_PAGINATION = 0
 let INDEX_PAGINATION = 1
-
+const ADS = [
+    {
+        title: "Moeda Bitcoin Ficticia Cor Ouro Colecionadores Criptomoeda",
+        url: "https://mercadolivre.com/sec/27egoTf",
+        img: "./assets/ads/mercadolivre-bitcoin.jpg"
+    },
+    {
+        title: "Catálogo Amigo Cédulas E Moedas 2024",
+        url: "https://mercadolivre.com/sec/19cjSHz",
+        img: "./assets/ads/mercadolivre-catalogo-amigo.jpg"
+    },
+    {
+        title: "10 Folhas Plásticas Para Coin Holders 20 Divisões Pccb",
+        url: "https://mercadolivre.com/sec/121sYcg",
+        img: "./assets/ads/mercadolivre-folha-holder.jpg"
+    },
+    {
+        title: "2 Caixas Coin Holders 27,5mm - Para Moedas De 1 Real",
+        url: "https://mercadolivre.com/sec/21Et15H",
+        img: "./assets/ads/mercadolivre-coin-holder.jpg"
+    },
+    {
+        title: "Álbum Para 120 Coin Holders",
+        url: "https://mercadolivre.com/sec/11xL3oa",
+        img: "./assets/ads/mercadolivre-pocket-holder.jpg"
+    },
+    {
+        title: "Caixa Organizadora Multiuso C/6 Gaveta 42 Divisoria Arqplast Cor Preto e Cinza",
+        url: "https://mercadolivre.com/sec/2yhURmm",
+        img: "./assets/ads/mercadolivre-gaveta-organizadora.jpg"
+    },
+    {
+        title: "Kit 4 Caixa Gaveteiro Plástico Organizador 16 Gavetas 7001 Cor Preto",
+        url: "https://mercadolivre.com/sec/1wGVNZ8",
+        img: "./assets/ads/mercadolivre-gaveta-coin.jpg"
+    },
+]
 
 function home() {
     const catalogo = json.catalogo; // extrai o array de moedas do JSON
@@ -506,7 +542,7 @@ const listarItensPageCedula = (params) => {
 
     if (!moedas?.length)
         return document.getElementById("container-moedas").style.display = "none"
-    
+
     qntMoedas = moedas.length
     QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE)
 
@@ -861,7 +897,30 @@ const populateNavbar = () => {
     }
 }
 
-document.addEventListener('DOMContentLoaded', populateNavbar)
+const populateAds = () => {
+    try {
+        const carousel = document.getElementById('carouselInner')
+        ADS.forEach((ad, index) => {
+            const div = document.createElement('div')
+            div.classList.add('carousel-item')
+            if (index == 0)
+                div.classList.add('active')
+            div.innerHTML = `
+            <a href="${ad?.url}" target="_blank" title="Você será redirecionado para o site">
+                <img class="d-block w-100" src="${ad?.img}" alt="${ad?.title}" />
+            </a>
+            `
+            carousel.appendChild(div)
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    populateNavbar();
+    populateAds()
+})
 
 // Exemplo de uso (substitua pelo seu método de carregamento do JSON):
 const json = {
@@ -1948,3 +2007,23 @@ const json = {
         }
     ]
 }
+
+
+// Seleciona o elemento do carousel
+const carouselElement = document.querySelector('#carouselFade');
+
+// Inicializa o Carousel (opcional se você já usa data-bs-ride)
+const carousel = new bootstrap.Carousel(carouselElement, {
+  interval: 5000, // Tempo entre os slides (em ms)
+  wrap: true,     // Permite que o Carousel volte ao início
+  pause: 'hover', // Pausa o Carousel ao passar o mouse
+});
+
+// Controle manual (exemplo)
+document.querySelector('.carousel-control-next').addEventListener('click', () => {
+  carousel.next(); // Próximo slide
+});
+
+document.querySelector('.carousel-control-prev').addEventListener('click', () => {
+  carousel.prev(); // Slide anterior
+});
