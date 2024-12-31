@@ -303,19 +303,6 @@ const pageMoeda = () => {
 
 const listarItensPage = (params) => {
     let qntMoedas = []
-    if (params?.search)
-        qntMoedas = json.catalogo.filter(item => !item.cedula && item.tipo == params?.search).length
-    else if (params?.local)
-        qntMoedas = json.catalogo.filter(item => item.pais == params?.local).length
-    else if (params?.estado)
-        qntMoedas = json.catalogo.filter(item => item.estado == params?.estado).length
-    else
-        qntMoedas = json.catalogo.filter(item => !item.cedula).length
-
-    QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE)
-
-    if (qntMoedas > 0 && qntMoedas < 20)
-        QNT_BUTTON_PAGINATION = 1
 
     // Moedas
     let moedas = json.catalogo.filter(item => !item.cedula)
@@ -327,10 +314,22 @@ const listarItensPage = (params) => {
         moedas = moedas.filter(item => item.pais == params?.local)
     else if (params?.estado)
         moedas = moedas.filter(item => item.estado == params?.estado)
+    else if (params?.collection)
+        if (params?.collection == 'olimpiadas')
+            moedas = moedas.filter(item =>
+                item?.titulo?.toLocaleLowerCase()?.includes("olimp") ||
+                item?.descricao?.toLocaleLowerCase()?.includes("olimp")
+            );
 
     if (!moedas?.length)
         return document.getElementById("container-moedas").style.display = "none"
     // return location.href = "./index.html"
+
+    qntMoedas = moedas.length
+    QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE)
+
+    if (qntMoedas > 0 && qntMoedas < 20)
+        QNT_BUTTON_PAGINATION = 1
 
     const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
     const end = ITENS_PER_PAGE * (params?.page || 1)
@@ -494,23 +493,9 @@ const pageCedula = () => {
 
 const listarItensPageCedula = (params) => {
     let qntMoedas = []
-    if (params?.search)
-        qntMoedas = json.catalogo.filter(item => item.cedula && item.tipo == params?.search).length
-    else if (params?.local)
-        qntMoedas = json.catalogo.filter(item => item.cedula && item.pais == params?.local).length
-    else if (params?.estado)
-        qntMoedas = json.catalogo.filter(item => item.cedula && item.estado == params?.estado).length
-    else
-        qntMoedas = json.catalogo.filter(item => item.cedula).length
-
-    QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE)
-
-    if (qntMoedas > 0 && qntMoedas < 20)
-        QNT_BUTTON_PAGINATION = 1
 
     // Moedas
     let moedas = json.catalogo.filter(item => item.cedula)
-    // listarMoedas(ITENS_PER_PAGE * INDEX_PAGINATION, ITENS_PER_PAGE * INDEX_PAGINATION - ITENS_PER_PAGE)
 
     if (params?.search)
         moedas = moedas.filter(item => item.tipo == params.search)
@@ -521,7 +506,12 @@ const listarItensPageCedula = (params) => {
 
     if (!moedas?.length)
         return document.getElementById("container-moedas").style.display = "none"
-    // return location.href = "./index.html"
+    
+    qntMoedas = moedas.length
+    QNT_BUTTON_PAGINATION = Math.round(qntMoedas / ITENS_PER_PAGE)
+
+    if (qntMoedas > 0 && qntMoedas < 20)
+        QNT_BUTTON_PAGINATION = 1
 
     const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
     const end = ITENS_PER_PAGE * (params?.page || 1)
@@ -629,7 +619,6 @@ const listarItemPageCedula = (id) => {
 //  Page Local
 const pageLocal = () => {
     try {
-        const queryString = location.search
         listarItensPageLocal()
     } catch (error) {
         console.log(error)
@@ -1029,7 +1018,7 @@ const json = {
         },
         {
             "id": 10001,
-            "titulo": "asd",
+            "titulo": "asd Olimpíadas",
             "nome": "Real",
             "sigla": "R$",
             "valor": 1,
@@ -1040,7 +1029,7 @@ const json = {
             "circulacao": true,
             "cedula": false,
             "tipo": "comemorativa",
-            "descricao": "texto",
+            "descricao": "texto Olimpíadas",
             "anomalia": false,
             "kit": false,
             "ficha": {
