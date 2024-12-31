@@ -62,9 +62,9 @@ function home() {
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.titulo}</h5>
                 <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
-                <p class="card-text">${moeda.descricao}</p>
-            </div>
-        `;
+                </div>
+                `;
+        // <p class="card-text">${moeda.descricao}</p>
 
         itemMoeda.addEventListener('click', () => location.href = `./moeda.html?id=${moeda.id}`)
         document.getElementById("card-container-moedas").appendChild(itemMoeda);
@@ -85,9 +85,9 @@ function home() {
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.titulo}</h5>
                 <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
-                <p class="card-text">${moeda.descricao}</p>
-            </div>
-        `;
+                </div>
+                `;
+        // <p class="card-text">${moeda.descricao}</p>
 
         itemMoeda.addEventListener('click', () => location.href = `./moeda.html?id=${moeda.id}`)
         document.getElementById("card-container-comemorativa").appendChild(itemMoeda);
@@ -134,9 +134,9 @@ function home() {
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.titulo}</h5>
                 <p class="card-text">  ${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
-                <p class="card-text">${moeda.descricao}</p>
-            </div>
-        `;
+                </div>
+                `;
+        // <p class="card-text">${moeda.descricao}</p>
 
         itemMoeda.addEventListener('click', () => location.href = `./cedula.html?id=${moeda.id}`)
         document.getElementById("card-container-cedulas").appendChild(itemMoeda);
@@ -317,9 +317,9 @@ const pageMoeda = () => {
                     <div class="card-body">
                         <h5 class="card-titulo">${moeda.titulo}</h5>
                         <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
-                        <p class="card-text"> ${moeda.descricao}</p>
-                    </div>
-        `;
+                        </div>
+                        `;
+                    // <p class="card-text"> ${moeda.descricao}</p>
 
                     itemMoeda.addEventListener('click', () => location.href = `./moeda.html?id=${moeda.id}`)
                     document.getElementById("card-container-moedas").appendChild(itemMoeda);
@@ -382,9 +382,9 @@ const listarItensPage = (params) => {
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.titulo}</h5>
                 <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
-                <p class="card-text"> ${moeda.descricao}</p>
                 </div>
                 `;
+        // <p class="card-text"> ${moeda.descricao}</p>
 
         itemMoeda.addEventListener('click', () => location.href = `./moeda.html?id=${moeda.id}`)
         document.getElementById("card-container-moedas-itens").appendChild(itemMoeda);
@@ -425,14 +425,24 @@ const listarItemPage = (id) => {
 
     const moeda = json.catalogo.filter(item => item.id == id)[0]
 
-    console.log(moeda)
 
     // Header
     document.querySelector('.card-header').innerText = moeda?.titulo
 
     // Body
-    const body = document.querySelector('#item-card-body')
+    const imgs = document.querySelector('#carousel-inner-card')
 
+    moeda?.imagens.forEach((img, index) => {
+        const item = document.createElement('div')
+        item.classList.add(`carousel-item`)
+        index == 0 &&  item.classList.add('active')
+        item.innerHTML = `
+            <img src="${img}" alt="${moeda?.nome} - Imagem" class="d-block w-100" style="width: 100%; height: auto;"/>
+            `
+        imgs.appendChild(item)
+    })
+    
+    const body = document.querySelector('#item-card-body')
     // Ano - Lugar
     const ano = document.createElement('h5')
     ano.classList.add("card-text")
@@ -457,11 +467,30 @@ const listarItemPage = (id) => {
     circulação.innerText = `Em circulação: ${moeda?.circulacao ? "sim" : "não"} - Anomalias: ${moeda?.anomalia ? "sim" : "não"}.`
     body.appendChild(circulação)
 
+    // Descricao
+    const descricao = document.createElement('p')
+    descricao.classList.add("card-text")
+    descricao.innerText = `${moeda?.descricao}`
+    body.appendChild(descricao)
+
     // HTML
     const html = document.createElement('div')
     html.classList.add("card-text")
     html.innerHTML = moeda?.html
     body.appendChild(html)
+
+    if (moeda?.enviadoPor) {
+        // HTML
+        const enviado = document.createElement('div')
+        enviado.classList.add("card-text")
+        enviado.innerHTML = `
+        <h5>Enviado por: ${moeda?.enviadoPor}</h5>
+        ${moeda?.redeSocialDoEnviador ? `<a href="${moeda?.redeSocialDoEnviador}" target="_blank">Cotato</p>` : ""}
+        
+        ${moeda?.mensagemEnviador ? `<p>Mensagem</p> <p>${moeda?.mensagemEnviador}</p>` : ""}
+        `
+        body.appendChild(enviado)
+    }
 
 
     // Ficha tecnica
@@ -507,9 +536,9 @@ const pageCedula = () => {
                     <div class="card-body">
                         <h5 class="card-titulo">${moeda.titulo}</h5>
                         <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
-                        <p class="card-text"> ${moeda.descricao}</p>
-                    </div>
-        `;
+                        </div>
+                        `;
+                    // <p class="card-text"> ${moeda.descricao}</p>
 
                     itemMoeda.addEventListener('click', () => location.href = `./cedula.html?id=${moeda.id}`)
                     document.getElementById("card-container-moedas").appendChild(itemMoeda);
@@ -564,9 +593,9 @@ const listarItensPageCedula = (params) => {
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.titulo}</h5>
                 <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
-                <p class="card-text"> ${moeda.descricao}</p>
                 </div>
                 `;
+        // <p class="card-text"> ${moeda.descricao}</p>
 
         itemMoeda.addEventListener('click', () => location.href = `./cedula.html?id=${moeda.id}`)
         document.getElementById("card-container-moedas-itens").appendChild(itemMoeda);
@@ -607,10 +636,21 @@ const listarItemPageCedula = (id) => {
 
     const moeda = json.catalogo.filter(item => item.id == id)[0]
 
-    console.log(moeda)
-
     // Header
     document.querySelector('.card-header').innerText = moeda?.titulo
+
+    // Body
+    const imgs = document.querySelector('#carousel-inner-card')
+    
+    moeda?.imagens.forEach((img, index) => {
+        const item = document.createElement('div')
+        item.classList.add(`carousel-item`)
+        index == 0 &&  item.classList.add('active')
+        item.innerHTML = `
+            <img src="${img}" alt="${moeda?.nome} - Imagem" class="d-block w-100" style="width: 100%; height: auto;"/>
+            `
+        imgs.appendChild(item)
+    })
 
     // Body
     const body = document.querySelector('#item-card-body')
@@ -639,12 +679,31 @@ const listarItemPageCedula = (id) => {
     circulação.innerText = `Em circulação: ${moeda?.circulacao ? "sim" : "não"} - Anomalias: ${moeda?.anomalia ? "sim" : "não"}.`
     body.appendChild(circulação)
 
+    // Descricao
+    const descricao = document.createElement('p')
+    descricao.classList.add("card-text")
+    descricao.innerText = `${moeda?.descricao}`
+    body.appendChild(descricao)
+
     // HTML
     const html = document.createElement('div')
     html.classList.add("card-text")
     html.innerHTML = moeda?.html
     body.appendChild(html)
 
+
+    if (moeda?.enviadoPor) {
+        // HTML
+        const enviado = document.createElement('div')
+        enviado.classList.add("card-text")
+        enviado.innerHTML = `
+        <h5>Enviado por: ${moeda?.enviadoPor}</h5>
+        ${moeda?.redeSocialDoEnviador ? `<a href="${moeda?.redeSocialDoEnviador}" target="_blank">Cotato</p>` : ""}
+        
+        ${moeda?.mensagemEnviador ? `<p>Mensagem</p> <p>${moeda?.mensagemEnviador}</p>` : ""}
+        `
+        body.appendChild(enviado)
+    }
 
     // Ficha tecnica
     iterarObjeto(moeda?.ficha)
@@ -674,7 +733,6 @@ const listarItensPageLocal = (params) => {
         grupo[pais].push(item); // Adiciona o item ao grupo do país
         return grupo;
     }, {});
-    console.log(moedas)
     const section = document.querySelector("section")
     if (!moedas)
         return document.querySelector("section").style.display = "none"
@@ -688,9 +746,6 @@ const listarItensPageLocal = (params) => {
 
     const init = ITENS_PER_PAGE * (params?.page || 1) - ITENS_PER_PAGE
     const end = ITENS_PER_PAGE * (params?.page || 1)
-
-    // const coins = moedas.slice(init, end)
-    // console.log(coins)
 
     for (const pais in moedas) {
         let div = document.createElement('div');
@@ -726,9 +781,9 @@ const listarItensPageLocal = (params) => {
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.titulo}</h5>
                 <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
-                <p class="card-text"> ${moeda.descricao}</p>
                 </div>
                 `;
+            // <p class="card-text"> ${moeda.descricao}</p>
 
             itemMoeda.addEventListener('click', () => location.href = `./${moeda?.cedula ? "cedula.html" : "moeda.html"}?id=${moeda.id}`)
             document.getElementById(`card-container-${pais?.trim()?.toLowerCase()}`).appendChild(itemMoeda);
@@ -746,9 +801,9 @@ const listarItensPageLocal = (params) => {
             <div class="card-body">
                 <h5 class="card-titulo">${moeda.titulo}</h5>
                 <p class="card-text">${moeda.tipo != "normal" ? moeda.tipo : ""} ${moeda.ano}, ${moeda.pais}.</p>
-                <p class="card-text"> ${moeda.descricao}</p>
                 </div>
                 `;
+        // <p class="card-text"> ${moeda.descricao}</p>
 
         itemMoeda.addEventListener('click', () => location.href = `./cedula.html?id=${moeda.id}`)
         document.getElementById("card-container-moedas-itens").appendChild(itemMoeda);
@@ -794,9 +849,6 @@ function iterarObjeto(obj) {
             p.classList.add("card-text")
             p.innerText = `${chave}: ${valor}.`
             ficha.appendChild(p)
-
-
-            console.log(chave, valor);
         }
     }
 }
@@ -857,7 +909,6 @@ const catalogo = () => {
                 const [key, value] = param.split("=");
                 params[key] = decodeURIComponent(value); // Decodifica a URL para lidar com caracteres especiais
             });
-            console.log(params);
         } else {
             console.log("Sem parâmetros na URL.");
         }
@@ -925,763 +976,691 @@ document.addEventListener('DOMContentLoaded', () => {
 // Exemplo de uso (substitua pelo seu método de carregamento do JSON):
 const json = {
     "catalogo": [
-    {
-      "id": 10001,
-      "titulo": "asd",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 0,
-      "pais": "Brasil",
-      "ano": 2022,
-      "quantidade": 1,
-      "estado": "Flor de Cunho",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "texto",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Aço revestido",
-        "borda": "Lisa",
-        "formato": "Redonda",
-        "peso": "7.55 gramas",
-        "diametro": "27 mm",
-        "espessura": "2.55 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>teste</p>",
-      "enviadoPor": "",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 0
-    },
-    {
-      "id": 10002,
-      "titulo": "asd",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 50,
-      "valorVenda": 0,
-      "pais": "Brasil",
-      "ano": 2024,
-      "quantidade": 1,
-      "estado": "Flor de Cunho",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "texto",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Aço revestido",
-        "borda": "Lisa",
-        "formato": "Redonda",
-        "peso": "7.55 gramas",
-        "diametro": "27 mm",
-        "espessura": "2.55 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>teste</p>",
-      "enviadoPor": "",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 0
-    },
-    {
-      "id": 10003,
-      "titulo": "1 Real - Mascote Tom (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 10,
-      "pais": "Brasil",
-      "ano": 2016,
-      "quantidade": 1,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta o personagem Tom, um dos mascotes dos jogos, no anverso. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além do personagem Tom, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 10
-    },
-    {
-      "id": 10004,
-      "titulo": "1 Real - Futebol (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 2,
-      "pais": "Brasil",
-      "ano": 2015,
-      "quantidade": 3,
-      "estado": "G",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de futebol no anverso, com um jogador realizando um chute e uma bola no ar. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de futebol, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 6
-    },
-    {
-      "id": 10005,
-      "titulo": "1 Real - Boxe (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 2,
-      "pais": "Brasil",
-      "ano": 2016,
-      "quantidade": 1,
-      "estado": "G",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de boxe no anverso, com dois pugilistas em combate. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p> \nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016. \n</p> \n<p> \nNo anverso, além da cena de boxe, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'. \n</p> \n<p> \nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'. \n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 2
-    },
-    {
-      "id": 10006,
-      "titulo": "1 Real - Atletismo Paralímpico (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 2,
-      "pais": "Brasil",
-      "ano": 2015,
-      "quantidade": 1,
-      "estado": "G",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de atletismo paralímpico no anverso, com um atleta com prótese correndo. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de atletismo paralímpico com o atleta com prótese, há a logomarca dos Jogos Paralímpicos Rio 2016 e a legenda 'JOGOS PARALÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 2
-    },
-    {
-      "id": 10007,
-      "titulo": "1 Real - Vela (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 2,
-      "pais": "Brasil",
-      "ano": 2015,
-      "quantidade": 1,
-      "estado": "G",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de vela no anverso, com um velejador em um barco a vela. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de vela, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 2
-    },
-    {
-      "id": 10008,
-      "titulo": "1 Real - Canoagem (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 2,
-      "pais": "Brasil",
-      "ano": 2015,
-      "quantidade": 2,
-      "estado": "G",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de canoagem no anverso, com um canoísta em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de canoagem, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 4
-    },
-    {
-      "id": 10009,
-      "titulo": "1 Real - Judô (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 2,
-      "pais": "Brasil",
-      "ano": 2015,
-      "quantidade": 1,
-      "estado": "G",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de judô no anverso, com dois judocas em combate. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de judô, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 2
-    },
-    {
-      "id": 10010,
-      "titulo": "1 Real - Natação (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 4,
-      "pais": "Brasil",
-      "ano": 2014,
-      "quantidade": 1,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2014. Apresenta uma cena estilizada de natação no anverso, com um nadador em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de natação, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 4
-    },
-    {
-      "id": 10011,
-      "titulo": "1 Real - Mascote Vinicius (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 10,
-      "pais": "Brasil",
-      "ano": 2016,
-      "quantidade": 1,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta o personagem Vinicius, um dos mascotes dos jogos, no anverso. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além do personagem Vinicius, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 10
-    },
-    {
-      "id": 10012,
-      "titulo": "1 Real - Golfe (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 4,
-      "pais": "Brasil",
-      "ano": 2014,
-      "quantidade": 1,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2014. Apresenta uma cena estilizada de golfe no anverso, com um golfista em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de golfe, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 4
-    },
-    {
-      "id": 10013,
-      "titulo": "1 Real - Ciclismo Paralímpico (Olimpíadas 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 4,
-      "pais": "Brasil",
-      "ano": 2014,
-      "quantidade": 1,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2014. Apresenta uma cena estilizada de golfe no anverso, com um golfista em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de golfe, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 4
-    },
-    {
-      "id": 10014,
-      "titulo": "1 Real - Basquete (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 2,
-      "pais": "Brasil",
-      "ano": 2014,
-      "quantidade": 1,
-      "estado": "G",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2015. Apresenta uma cena estilizada de basquete no anverso, com um jogador arremessando a bola na cesta. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.\n\n3. País: Brasil",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de basquete, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 2
-    },
-    {
-      "id": 10015,
-      "titulo": "1 Real - Canoagem (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 4,
-      "pais": "Brasil",
-      "ano": 2015,
-      "quantidade": 2,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de canoagem no anverso, com um canoísta em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de canoagem, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 8
-    },
-    {
-      "id": 10016,
-      "titulo": "1 Real - Bandeira Nacional (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 2,
-      "valorVenda": 220,
-      "pais": "Brasil",
-      "ano": 2015,
-      "quantidade": 2,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial dos Jogos Olímpicos Rio 2016. Apresenta no anverso uma representação da Bandeira Nacional do Brasil, com detalhes texturizados simulando o tecido. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da representação da Bandeira Nacional, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nEsta é a última moeda da série das Olimpíadas de 2016.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 440
-    },
-    {
-      "id": 10017,
-      "titulo": "1 Real - Natação (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 2,
-      "pais": "Brasil",
-      "ano": 2014,
-      "quantidade": 1,
-      "estado": "G",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2014. Apresenta uma cena estilizada de natação no anverso, com um nadador em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de natação, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 2
-    },
-    {
-      "id": 10018,
-      "titulo": "1 Real - Rugby (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 4,
-      "pais": "Brasil",
-      "ano": 2015,
-      "quantidade": 2,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2015. Apresenta uma cena estilizada de rugby no anverso, com um jogador carregando a bola durante a partida. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de rugby, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 8
-    },
-    {
-      "id": 10019,
-      "titulo": "1 Real - Atletismo (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 4,
-      "pais": "Brasil",
-      "ano": 2014,
-      "quantidade": 1,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2014. Apresenta uma cena estilizada de atletismo no anverso, com um atleta correndo. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de atletismo, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 4
-    },
-    {
-      "id": 10020,
-      "titulo": "1 Real - Natação Paralímpica (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 4,
-      "pais": "Brasil",
-      "ano": 2016,
-      "quantidade": 1,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial dos Jogos Paralímpicos Rio 2016. Apresenta uma cena estilizada de natação paralímpica no anverso, com um atleta nadando. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https: //acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de natação paralímpica, há a logomarca dos Jogos Paralímpicos Rio 2016 e a legenda 'JOGOS PARALÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 4
-    },
-    {
-      "id": 10021,
-      "titulo": "1 Real - Vôlei (Olimpíadas Rio 2016)",
-      "nome": "Real",
-      "simbolo": "R$",
-      "sigla": "BRL",
-      "valor": 1,
-      "valorVenda": 4,
-      "pais": "Brasil",
-      "ano": 2015,
-      "quantidade": 1,
-      "estado": "BC",
-      "circulacao": true,
-      "cedula": false,
-      "tipo": "comemorativa",
-      "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2015. Apresenta uma cena estilizada de vôlei no anverso, com um jogador efetuando um ataque. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
-      "anomalia": false,
-      "kit": false,
-      "ficha": {
-        "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
-        "borda": "Lisa",
-        "formato": "Circular",
-        "peso": "7.00 g",
-        "diametro": "27 mm",
-        "espessura": "2 mm"
-      },
-      "imagens": [
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/moeda-1-real-2024-9550367c88d79b5f7d17330914047848-1024-1024.webp",
-        "https://acdn.mitiendanube.com/stores/002/379/691/products/1000400958-3f79ca2f4320b8fb5117291977460790-1024-1024.webp"
-      ],
-      "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de vôlei, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
-      "enviadoPor": "Leonardo Garcia",
-      "redeSocialDoEnviador": "",
-      "mensagemEnviador": "",
-      "Saldo": 4
-    }
-  ]
+        {
+            "id": 10003,
+            "titulo": "1 Real - Mascote Tom (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 10,
+            "pais": "Brasil",
+            "ano": 2016,
+            "quantidade": 1,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta o personagem Tom, um dos mascotes dos jogos, no anverso. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além do personagem Tom, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 10
+        },
+        {
+            "id": 10004,
+            "titulo": "1 Real - Futebol (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 2,
+            "pais": "Brasil",
+            "ano": 2015,
+            "quantidade": 3,
+            "estado": "G",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de futebol no anverso, com um jogador realizando um chute e uma bola no ar. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de futebol, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 6
+        },
+        {
+            "id": 10005,
+            "titulo": "1 Real - Boxe (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 2,
+            "pais": "Brasil",
+            "ano": 2016,
+            "quantidade": 1,
+            "estado": "G",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de boxe no anverso, com dois pugilistas em combate. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p> \nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016. \n</p> \n<p> \nNo anverso, além da cena de boxe, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'. \n</p> \n<p> \nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'. \n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 2
+        },
+        {
+            "id": 10006,
+            "titulo": "1 Real - Atletismo Paralímpico (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 2,
+            "pais": "Brasil",
+            "ano": 2015,
+            "quantidade": 1,
+            "estado": "G",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de atletismo paralímpico no anverso, com um atleta com prótese correndo. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de atletismo paralímpico com o atleta com prótese, há a logomarca dos Jogos Paralímpicos Rio 2016 e a legenda 'JOGOS PARALÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 2
+        },
+        {
+            "id": 10007,
+            "titulo": "1 Real - Vela (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 2,
+            "pais": "Brasil",
+            "ano": 2015,
+            "quantidade": 1,
+            "estado": "G",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de vela no anverso, com um velejador em um barco a vela. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de vela, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 2
+        },
+        {
+            "id": 10008,
+            "titulo": "1 Real - Canoagem (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 2,
+            "pais": "Brasil",
+            "ano": 2015,
+            "quantidade": 2,
+            "estado": "G",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de canoagem no anverso, com um canoísta em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de canoagem, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 4
+        },
+        {
+            "id": 10009,
+            "titulo": "1 Real - Judô (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 2,
+            "pais": "Brasil",
+            "ano": 2015,
+            "quantidade": 1,
+            "estado": "G",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de judô no anverso, com dois judocas em combate. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de judô, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 2
+        },
+        {
+            "id": 10010,
+            "titulo": "1 Real - Natação (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 4,
+            "pais": "Brasil",
+            "ano": 2014,
+            "quantidade": 1,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2014. Apresenta uma cena estilizada de natação no anverso, com um nadador em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de natação, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 4
+        },
+        {
+            "id": 10011,
+            "titulo": "1 Real - Mascote Vinicius (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 10,
+            "pais": "Brasil",
+            "ano": 2016,
+            "quantidade": 1,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta o personagem Vinicius, um dos mascotes dos jogos, no anverso. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além do personagem Vinicius, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 10
+        },
+        {
+            "id": 10012,
+            "titulo": "1 Real - Golfe (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 4,
+            "pais": "Brasil",
+            "ano": 2014,
+            "quantidade": 1,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2014. Apresenta uma cena estilizada de golfe no anverso, com um golfista em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de golfe, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 4
+        },
+        {
+            "id": 10013,
+            "titulo": "1 Real - Ciclismo Paralímpico (Olimpíadas 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 4,
+            "pais": "Brasil",
+            "ano": 2014,
+            "quantidade": 1,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2014. Apresenta uma cena estilizada de golfe no anverso, com um golfista em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de golfe, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 4
+        },
+        {
+            "id": 10014,
+            "titulo": "1 Real - Basquete (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 2,
+            "pais": "Brasil",
+            "ano": 2014,
+            "quantidade": 1,
+            "estado": "G",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2015. Apresenta uma cena estilizada de basquete no anverso, com um jogador arremessando a bola na cesta. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.\n\n3. País: Brasil",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de basquete, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 2
+        },
+        {
+            "id": 10015,
+            "titulo": "1 Real - Canoagem (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 4,
+            "pais": "Brasil",
+            "ano": 2015,
+            "quantidade": 2,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016. Apresenta uma cena estilizada de canoagem no anverso, com um canoísta em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de canoagem, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 8
+        },
+        {
+            "id": 10016,
+            "titulo": "1 Real - Bandeira Nacional (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 2,
+            "valorVenda": 220,
+            "pais": "Brasil",
+            "ano": 2015,
+            "quantidade": 2,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial dos Jogos Olímpicos Rio 2016. Apresenta no anverso uma representação da Bandeira Nacional do Brasil, com detalhes texturizados simulando o tecido. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da representação da Bandeira Nacional, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nEsta é a última moeda da série das Olimpíadas de 2016.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 440
+        },
+        {
+            "id": 10017,
+            "titulo": "1 Real - Natação (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 2,
+            "pais": "Brasil",
+            "ano": 2014,
+            "quantidade": 1,
+            "estado": "G",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2014. Apresenta uma cena estilizada de natação no anverso, com um nadador em ação. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de natação, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 2
+        },
+        {
+            "id": 10018,
+            "titulo": "1 Real - Rugby (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 4,
+            "pais": "Brasil",
+            "ano": 2015,
+            "quantidade": 2,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2015. Apresenta uma cena estilizada de rugby no anverso, com um jogador carregando a bola durante a partida. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de rugby, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 8
+        },
+        {
+            "id": 10019,
+            "titulo": "1 Real - Atletismo (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 4,
+            "pais": "Brasil",
+            "ano": 2014,
+            "quantidade": 1,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2014. Apresenta uma cena estilizada de atletismo no anverso, com um atleta correndo. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de atletismo, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 4
+        },
+        {
+            "id": 10020,
+            "titulo": "1 Real - Natação Paralímpica (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 4,
+            "pais": "Brasil",
+            "ano": 2016,
+            "quantidade": 1,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial dos Jogos Paralímpicos Rio 2016. Apresenta uma cena estilizada de natação paralímpica no anverso, com um atleta nadando. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de natação paralímpica, há a logomarca dos Jogos Paralímpicos Rio 2016 e a legenda 'JOGOS PARALÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 4
+        },
+        {
+            "id": 10021,
+            "titulo": "1 Real - Vôlei (Olimpíadas Rio 2016)",
+            "nome": "Real",
+            "simbolo": "R$",
+            "sigla": "BRL",
+            "valor": 1,
+            "valorVenda": 4,
+            "pais": "Brasil",
+            "ano": 2015,
+            "quantidade": 1,
+            "estado": "BC",
+            "circulacao": true,
+            "cedula": false,
+            "tipo": "comemorativa",
+            "descricao": "Moeda comemorativa de 1 Real, parte da série especial das Olimpíadas Rio 2016, com cunhagem em 2015. Apresenta uma cena estilizada de vôlei no anverso, com um jogador efetuando um ataque. O reverso é o mesmo da moeda de 1 Real padrão, com a inscrição 'BRASIL' e detalhes ornamentais.",
+            "anomalia": false,
+            "kit": false,
+            "ficha": {
+                "composicao": "Núcleo de aço inoxidável, anel de aço revestido de bronze",
+                "borda": "Lisa",
+                "formato": "Circular",
+                "peso": "7.00 g",
+                "diametro": "27 mm",
+                "espessura": "2 mm"
+            },
+            "imagens": [
+                "https://i.ibb.co/HNnQvPq/20241230-234451.jpg",
+                "https://i.ibb.co/CBSWMXr/20241230-234425.jpg"
+            ],
+            "html": "<p>\nEsta moeda faz parte de uma série especial de 16 moedas comemorativas dos Jogos Olímpicos e Paralímpicos Rio 2016.\n</p>\n<p>\nNo anverso, além da cena de vôlei, há a logomarca dos Jogos Olímpicos Rio 2016 e a legenda 'JOGOS OLÍMPICOS RIO 2016'.\n</p>\n<p>\nO reverso é idêntico ao da moeda de 1 Real padrão, com o valor '1 REAL' e a legenda 'BRASIL'.\n</p>",
+            "enviadoPor": "Leonardo Garcia",
+            "redeSocialDoEnviador": "",
+            "mensagemEnviador": "",
+            "Saldo": 4
+        }
+    ]
 }
 
 
@@ -1690,16 +1669,16 @@ const carouselElement = document.querySelector('#carouselFade');
 
 // Inicializa o Carousel (opcional se você já usa data-bs-ride)
 const carousel = new bootstrap.Carousel(carouselElement, {
-  interval: 5000, // Tempo entre os slides (em ms)
-  wrap: true,     // Permite que o Carousel volte ao início
-  pause: 'hover', // Pausa o Carousel ao passar o mouse
+    interval: 5000, // Tempo entre os slides (em ms)
+    wrap: true,     // Permite que o Carousel volte ao início
+    pause: 'hover', // Pausa o Carousel ao passar o mouse
 });
 
 // Controle manual (exemplo)
 document.querySelector('.carousel-control-next').addEventListener('click', () => {
-  carousel.next(); // Próximo slide
+    carousel.next(); // Próximo slide
 });
 
 document.querySelector('.carousel-control-prev').addEventListener('click', () => {
-  carousel.prev(); // Slide anterior
+    carousel.prev(); // Slide anterior
 });
