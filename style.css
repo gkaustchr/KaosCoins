@@ -60,7 +60,7 @@ body {
 
 #item {
     width: 100vw;
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -78,13 +78,15 @@ body {
     transform: scale(1);
 }
 
-.card h5 {
+.card .card-body h5 {
+    font-size: 1em;
     margin-bottom: 0px;
     padding: 0px;
     text-transform: uppercase;
     word-break: break-all;
     word-wrap: break-word;
     word-spacing: normal;
+    text-wrap: initial;
 }
 
 .card-header {
